@@ -34,6 +34,7 @@ class MeanBandit():
         self.means = np.random.random((num_options,))
         self.counts = np.zeros(shape=(num_options,), dtype=int)
         self.num_options = num_options
+        self.weights = weights
 
     def update(self, trial_id, reward):
         # Add new trial to running mean
@@ -53,7 +54,7 @@ class MeanBandit():
         
 class SampleMean():
     def __init__(self, n_models = 1000, num_options = 2, weights = None, modelType = MeanBandit):
-        self.models = [modelType(num_options = num_options, weights = None) for _ in range(n_models)]
+        self.models = [modelType(num_options = num_options, weights = weights) for _ in range(n_models)]
 
     def recommend(self):
         return np.random.choice(self.models).recommend()
@@ -83,7 +84,7 @@ class LinearBandit():
             # Update weights
             X = np.asarray(self.data)
             y = np.asarray(self.results)
-            self.weights = (np.linalg.inv(X.T.dot(X)).dot(X.T)).dot(y)
+            self.weights = (np.linalg.pinv(X.T.dot(X)).dot(X.T)).dot(y)
         self.count += 1
     
     def recommend(self, variables):
@@ -94,13 +95,13 @@ class LinearBandit():
         return X.dot(self.weights)
         
 class SampleLinear():
-    def __init__(self, n_models = 1000, num_variables = 2, batch_size=10, modelType = MeanBandit):
+    def __init__(self, n_models = 1000, num_variables = 2, batch_size=10, modelType = LinearBandit):
         self.models = [modelType(num_variables = num_variables, batch_size = batch_size) for _ in range(n_models)]
 
-    def recommend(self):
-        return np.random.choice(self.models).recommend()
+    def recommend(self, variables):
+        return np.random.choice(self.models).recommend(variables)
 
-    def update(self, trial_id, reward):
+    def update(self, variables, success):
         for model in self.models:
             if np.random.rand(1) > 0.5:
-                model.update(trial_id, reward)  
+                model.update(variables, success)  

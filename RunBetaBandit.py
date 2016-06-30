@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from Bandits import BetaBandit
-sys.path.append('..\\')
+sys.path.append('../')
 
 from aiws import api
 api.authenticate('bandits-of-the-west','')
@@ -52,7 +52,7 @@ def test_random_requests():
             offer['adtype'] = all_adtype[choice_adtype]
             offer['color'] = all_color[choice_color]
             offer['price'] = all_price[choice_price]
-            print all_price[choice_price]
+            
             result = api.serve_page(run_id, request_number,
                 header=offer['header'],
                 language=offer['language'],

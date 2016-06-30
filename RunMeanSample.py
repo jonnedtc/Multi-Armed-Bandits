@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from Bandits import SampleBandit
+from Bandits import SampleMean
 sys.path.append('../')
 
 from aiws import api
@@ -18,10 +18,10 @@ def test_random_requests():
         all_color = ['green', 'blue', 'red', 'black', 'white']
         all_price = map(lambda x: 20+float(x)*2,range(16))
         
-        B_header = SampleBandit(num_options=len(all_header))
-        B_adtype = SampleBandit(num_options=len(all_adtype))
-        B_color = SampleBandit(num_options=len(all_color))
-        B_price = SampleBandit(num_options=len(all_price), weights=all_price)
+        B_header = SampleMean(num_options=len(all_header))
+        B_adtype = SampleMean(num_options=len(all_adtype))
+        B_color = SampleMean(num_options=len(all_color))
+        B_price = SampleMean(num_options=len(all_price), weights=all_price)
         
         for request_number in xrange(n):
 

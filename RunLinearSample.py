@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from Bandits import MeanSample, LinearSample
+from Bandits import SampleMean, SampleLinear
 sys.path.append('../')
 
 from aiws import api
@@ -22,11 +22,11 @@ def test_random_requests():
         all_color = ['green', 'blue', 'red', 'black', 'white']
         all_price = map(lambda x: 20+float(x)*2,range(16))
         
-        B_header = MeanSample(num_options=len(all_header))
-        B_adtype = MeanSample(num_options=len(all_adtype))
-        B_color = MeanSample(num_options=len(all_color))
+        B_header = SampleMean(num_options=len(all_header))
+        B_adtype = SampleMean(num_options=len(all_adtype))
+        B_color = SampleMean(num_options=len(all_color))
         # num_variables = price + age + os + referrer + agent = 5
-        B_price = LinearSample(num_variables = 5)
+        B_price = SampleLinear(num_variables = 5)
         
         for request_number in xrange(n):
 
@@ -41,7 +41,7 @@ def test_random_requests():
             choice_color = B_color.recommend()
             
             # LinearBandit
-            best_reward = 0
+            best_reward = -999
             best_price = 0
             for price in all_price:
                 variables = [price] + [context['age']] + [os_dict[context['os']]] + [referrer_dict[context['referrer']]] + [agent_dict[context['agent']]]
